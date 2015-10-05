@@ -29,6 +29,8 @@ from_chris = open("from_chris.txt", "r")
 from_data = []
 word_data = []
 
+words_to_remove = ["sara", "shackleton", "chris", "germani"]
+
 ### temp_counter is a way to speed up the development--there are
 ### thousands of emails from Sara and Chris, so running over all of them
 ### can take a long time
@@ -47,14 +49,27 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
             email = open(path, "r")
 
             ### use parseOutText to extract the text from the opened email
+            parsed_email = parseOutText(email)
 
             ### use str.replace() to remove any instances of the words
             ### ["sara", "shackleton", "chris", "germani"]
+            split_parsed_email = parsed_email.split()
+            for word in words_to_remove:
+                while word in split_parsed_email:
+                    split_parsed_email.remove(word)
 
             ### append the text to word_data
+            new_email = ""
+            for word in split_parsed_email:
+                new_email += word + " "
+
+            word_data.append(new_email)
 
             ### append a 0 to from_data if email is from Sara, and 1 if email is from Chris
-
+            if from_person == from_sara:
+                from_data.append(0)
+            elif from_person == from_chris:
+                from_data.append(1)
 
             email.close()
 
