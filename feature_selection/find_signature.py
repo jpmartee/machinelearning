@@ -3,6 +3,9 @@
 import pickle
 import numpy
 numpy.random.seed(42)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 ### the words (features) and authors (labels), already largely processed
@@ -33,9 +36,38 @@ features_test  = vectorizer.transform(features_test).toarray()
 features_train = features_train[:150].toarray()
 labels_train   = labels_train[:150]
 
+clf = DecisionTreeClassifier()
+clf.fit(features_train, labels_train)
 
+pred = clf.predict(features_test)
+acc = accuracy_score(pred, labels_test)
 
-### your code goes here
+print "\nAccuracy of decision tree:",
+print acc
+
+number_of_important_features = 0
+most_important_coef = None
+for i in clf.feature_importances_:
+	if i > 0.2:
+		most_important_coef = i
+		number_of_important_features += 1
+
+print "\nMost important feature has coeff of",
+print round(most_important_coef, 3),
+print "and has index of",
+max_index = numpy.nanargmax(clf.feature_importances_)
+print max_index
+
+print "\nMost important feature word:",
+
+# vectorizer.fit_transform(word_data)
+vocab_list = vectorizer.get_feature_names()
+
+print vocab_list[max_index]
+
+print "\nNumber of important features:",
+print number_of_important_features
+
 
 
 
